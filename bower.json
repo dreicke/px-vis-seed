@@ -1,0 +1,41 @@
+{
+  "name": "px-vis-seed",
+  "version": "0.0.1",
+  "main": [
+    "px-vis-seed.html"
+  ],
+  "ignore": [
+    ".*",
+    "npm-debug.log",
+    "gulpfile.js",
+    "sass",
+    "bower_components",
+    "node_modules",
+    "test",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    "px-vis-seed.png",
+    "LICENSE.md",
+    "CONTRIBUTING.md",
+    "HISTORY.md",
+    "README.md",
+    ".jshintrc",
+    ".editorconfig",
+    "*.enc"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.1",
+    "px-theme": "^2.0.3"
+  },
+  "devDependencies": {
+    "px-meta-buttons-design": "^0.6.2",
+        "px-meta-lists-design": "^0.4.1",
+        "px-forms-design": "^1.1.4",
+        "px-headings-design": "^0.3.3",
+        "px-tables-design": "^1.1.5",
+        "px-layout-design": "^0.4.3",
+    "px-starter-kit-design": "^0.7.3",
+    "px-demo": "^1.3.2"
+  }
+}

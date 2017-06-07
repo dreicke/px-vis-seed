@@ -1,0 +1,218 @@
+<!--
+    Relative paths assume component is being run from inside an app or another component, where dependencies are flat
+    siblings. When this component is run from its own repo (e.g. tests, examples), we assume the server is started with
+    'gulp serve' (or similar server setup) to enable correct finding of bower dependencies for local runs.
+-->
+
+
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../px-vis/px-vis-scale.html"/>
+<link rel="import" href="../px-vis/px-vis-svg.html"/>
+<link rel="import" href="../px-vis/px-vis-line-svg.html"/>
+<link rel="import" href="../px-vis/px-vis-bar-svg.html"/>
+<link rel="import" href="../px-vis/px-vis-axis.html"/>
+<link rel="import" href="css/px-vis-seed-styles.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html" />
+<link rel="import" href="../px-vis/px-vis-behavior-chart.html" />
+<link rel="import" href="../px-vis/px-vis-behavior-d3.html" />
+<link rel="import" href="../px-vis/px-vis-behavior-common.html" />
+<link rel="import" href="../px-colors-design/colors.html"/>
+
+<!--
+REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
+
+##### Usage
+
+    <px-vis-seed ></px-vis-seed>
+
+@element px-vis-seed
+@blurb REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
+@homepage index.html
+@demo index.html
+-->
+
+
+<dom-module id="px-vis-seed">
+      <div id="wrapper" class="wrapper flex" >
+        <template>
+          <px-vis-svg
+            width="[[width]]"
+            height="[[height]]"
+            margin="[[margin]]"
+            svg="{{svg}}">
+          </px-vis-svg>
+          <px-vis-scale
+            x-axis-type="scaleBand"
+            y-axis-type="linear"
+            complete-series-config="[[seriesConfig]]"
+            data-extents="{{extentsData}}"
+            width="[[width]]"
+            height="[[height]]"
+            margin="[[margin]]"
+            chart-data={{_returnStack()}}
+            x="{{x}}"
+            y="{{y}}"
+            domain-changed="{{domainChanged}}"
+            selected-domain="[[selectedDomain]]">
+          </px-vis-scale>
+          <px-vis-bar-svg
+      			svg="[[svg]]"
+      			complete-series-config="[[seriesConfig]]"
+      			chart-data="[[data]]"
+      			iScale="[[x]]"
+      			dScale="[[y]]"
+      			domain-changed="[[domainChanged]]">
+      	  </px-vis-bar-svg>
+
+<!--           <px-vis-line-svg
+            svg="[[svg]]"
+            series-id="mySeries"
+            chart-data="[[data]]"
+            complete-series-config="[[seriesConfig]]"
+            x="[[x]]"
+            y="[[y]]"
+            domain-changed="[[domainChanged]]">
+          </px-vis-line-svg>-->
+          <px-vis-axis
+	        svg="[[svg]]"
+	        axis="[[y]]"
+	        margin="[[margin]]"
+	        width="[[width]]"
+	        height="[[height]]"
+	        title="myTitle"
+	        orientation="left"
+	        label-position="center"
+	        complete-series-config="[[seriesConfig]]"
+	        muted-series=[[mutedSeries]]
+	        domain-changed="[[domainChanged]]">
+	      </px-vis-axis> 
+
+        </template>
+      </div>
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'px-vis-seed',
+
+    behaviors: [
+        PxColorsBehavior.dataVisColors,
+        PxColorsBehavior.dataVisColorTheming,
+        PxVisBehavior.getSeriesColors
+    ],
+
+    properties: {
+
+      /**
+       * A JSON array of data that will be drawn in the spark.
+       * Requires data in the format `[{"x":0, "y":0},...]`.
+       *
+       * @property data
+       * @type Array
+       * @default []
+       */
+      data: {
+        type: Array,
+        observer: '_dataChanged'
+      },
+
+      /**
+       * Whether the chart should resize as window size is adjusted.
+       * @property preventResize
+       * @type Boolean
+       * @value false
+       */
+      preventResize:{
+        type: Boolean,
+        value: false
+      },
+      /**
+      * Width of the chart.
+      * @prop width
+      * @type String
+      */
+      width: {
+          type: Number,
+          value: 300
+      },
+      /**
+      * Height of the chart.
+      * @prop height
+      * @type String
+      */
+      height: {
+          type: Number,
+          value: 50
+      },
+      margin: {
+          type: Object,
+          value: {
+            "left":10,
+            "right":10,
+            "top":10,
+            "bottom":10
+          }
+      },
+      seriesConfig: {
+        type: Object
+      },
+
+      extentsData: {
+        type: Object,
+        value: {
+          "x": [Infinity,-Infinity],
+          "y": [0,-Infinity]
+        }
+      }
+    },
+
+    listeners: {
+      "px-data-vis-colors-applied" : '_returnCompleteSeriesConfig',
+
+    },
+
+    _onIronResize: function() {
+      this.debounce('ironresize', function() {
+        if(this.preventResize){
+          return;
+        }
+
+        var wrapperRect = this.$$('#wrapper').getBoundingClientRect();
+        this.set('width', Math.max(wrapperRect.width,0));
+        this.set('height', Math.max(wrapperRect.height,0));
+      },50);
+    },
+
+    _dataChanged: function() {
+      this.set("extentsData", {"x": [Infinity,-Infinity],"y": [0,-Infinity]});
+
+    },
+    // attached: function() {
+    //   this._onIronResize();
+    // },
+
+    _returnStack: function() {
+      console.log(this.data);
+    },
+
+
+    _returnCompleteSeriesConfig: function() {
+        this.set('seriesConfig', {
+          'mySeries': {
+            "name":"My-Series",
+            "type": "bar",
+            "x": 'x',
+            "y": 'y',
+            'color': this._getColor(0)
+          }
+        });
+      }
+
+
+
+
+  });
+</script>
+
